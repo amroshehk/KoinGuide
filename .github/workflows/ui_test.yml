@@ -3,7 +3,6 @@ name: Android UI Tests CI
 on:
   workflow_dispatch:
 
-
 jobs:
   ui-test:
     name: Run UI Tests
@@ -65,12 +64,15 @@ jobs:
         run: |
           adb kill-server
           adb start-server
-
+          
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+        
       - name: Instrumentation Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
-          target: google_apis      # Set target to google_apis
+          target: google_apis
           arch: x86_64
           force-avd-creation: false
           emulator-boot-timeout: 600
@@ -81,4 +83,4 @@ jobs:
             adb shell settings put global animator_duration_scale 0
             adb shell settings put global transition_animation_scale 0
             adb shell settings put global window_animation_scale 0
-            ./gradlew connectedCheck
+            ./gradlew connectedAndroidTest
